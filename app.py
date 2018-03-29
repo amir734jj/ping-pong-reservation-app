@@ -17,13 +17,12 @@ class JsonModel(object):
 
 
 class User(db.Model, JsonModel):
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     name = db.Column(db.String(100))
     start_time = db.Column(db.DateTime())
     end_time = db.Column(db.DateTime())
 
     def __init__(self, name, start_time, end_time):
-        self.id = randint(0, 1000)
         self.name = name
         start_time = parser.parse(start_time)
         end_time = parser.parse(end_time)
