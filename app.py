@@ -1,12 +1,12 @@
 import os
-
 from flask import Flask, render_template, request, redirect, url_for, jsonify, json, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
+from random import randint
+from dateutil import parser
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
+DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:////tmp/flask_app.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db = SQLAlchemy(app)
 
@@ -17,13 +17,16 @@ class JsonModel(object):
 
 
 class User(db.Model, JsonModel):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(100))
-    start_time = db.Column(db.String(100))
-    end_time = db.Column(db.String(100))
+    start_time = db.Column(db.DateTime())
+    end_time = db.Column(db.DateTime())
 
     def __init__(self, name, start_time, end_time):
+        self.id = randint(0, 1000)
         self.name = name
+        start_time = parser.parse(start_time)
+        end_time = parser.parse(end_time)
         self.start_time = start_time
         self.end_time = end_time
 
@@ -75,5 +78,5 @@ def delete_user(user_id):
 if __name__ == '__main__':
     db.create_all()
     db.session.commit()
-    port = int(os.environ.get('PORT', 80))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='127.0.0.1', port=port, debug=True)
