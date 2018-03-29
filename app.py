@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:////tmp/flask_app2.db')
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 db = SQLAlchemy(app)
@@ -74,5 +74,5 @@ def delete_user(user_id):
 
 if __name__ == '__main__':
     db.create_all()
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 80))
     app.run(host='0.0.0.0', port=port, debug=True)
