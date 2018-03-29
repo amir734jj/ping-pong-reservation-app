@@ -2,4 +2,9 @@
 
 {% block body %}
   Taha!
+
+  {% for u in users %}
+    <p>{{ u.name }}, start time: {{ u.start_time }}, end time: {{ u.end_time }}</p>
+  {% endfor %}
+
 {% endblock %}

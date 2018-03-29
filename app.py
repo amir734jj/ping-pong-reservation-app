@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, j
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 from dateutil import parser
+import datetime
 
 app = Flask(__name__)
 
@@ -26,13 +27,45 @@ class User(db.Model, JsonModel):
         self.name = name
         start_time = parser.parse(start_time)
         end_time = parser.parse(end_time)
+
         self.start_time = start_time
         self.end_time = end_time
 
 
+def validate_start_end_time(start_time, end_time, user_id, users=None):
+    if start_time >= end_time:
+        raise Exception("start_time should be less than end_time")
+
+    if not users:
+        users = User.query.all()
+
+    for user in users:
+        if user.id == user_id:
+            continue
+        elif end_time <= user.start_time or start_time >= user.end_time:
+            continue
+        elif start_time == user.start_time and end_time == user.end_time:
+            return False
+        elif start_time <= user.start_time and end_time >= user.end_time:
+            return False
+        elif start_time >= user.start_time and end_time <= user.end_time:
+            return False
+        elif user.start_time <= start_time <= user.end_time:
+            return False
+        elif start_time <= user.start_time and end_time < user.end_time:
+            return False
+        elif user.start_time <= end_time <= user.end_time:
+            return False
+        elif user.start_time >= end_time >= user.end_time:
+            return False
+        else:
+            continue
+    return True
+
+
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', users=User.query.all())
 
 
 @app.route('/user', methods=['GET'])
@@ -43,9 +76,13 @@ def get_all():
 @app.route('/user', methods=['POST'])
 def create_user():
     user = User(request.form['name'], request.form['start_time'], request.form['end_time'])
-    db.session.add(user)
-    db.session.commit()
-    return json.dumps(user.as_dict())
+
+    if validate_start_end_time(user.start_time, user.end_time, user.id):
+        db.session.add(user)
+        db.session.commit()
+        return json.dumps(user.as_dict())
+    else:
+        return abort(400)
 
 
 @app.route('/user/<user_id>', methods=['PUT'])
@@ -58,8 +95,12 @@ def update_user(user_id):
         user.name = request.form['name']
         user.start_time = request.form['start_time']
         user.end_time = request.form['end_time']
-        db.session.commit()
-        return json.dumps(user.as_dict())
+
+        if validate_start_end_time(user.start_time, user.end_time, user.id):
+            db.session.commit()
+            return json.dumps(user.as_dict())
+        else:
+            return abort(400)
 
 
 @app.route('/user/<user_id>', methods=['DELETE'])
