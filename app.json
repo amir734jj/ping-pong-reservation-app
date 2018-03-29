@@ -6,7 +6,7 @@
     "python",
     "sample"
   ],
-  "repository": "https://github.com/yefim/flask-heroku-sample",
+  "repository": "https://github.com/amir734jj/ping-pong-reservation-app/",
   "addons": [
     "heroku-postgresql"
   ]
