@@ -7,10 +7,12 @@ import datetime
 
 app = Flask(__name__)
 
-DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:////tmp/flask_app.db')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///flask_app.db')
+print(DATABASE_URL)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-db = SQLAlchemy(app)
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
+db = SQLAlchemy(app)
 
 class JsonModel(object):
     def as_dict(self):
@@ -33,7 +35,7 @@ class User(db.Model, JsonModel):
 
 
 def validate_start_end_time(start_time, end_time, user_id, users=None):
-    if start_time >= end_time:
+    if start_time >= end_time or start_time <= datetime.datetime.now():
         raise Exception("start_time should be less than end_time")
 
     if not users:
@@ -63,8 +65,21 @@ def validate_start_end_time(start_time, end_time, user_id, users=None):
     return True
 
 
+def cleanup():
+    for user in User.query.all():
+        if datetime.datetime.now() > user.start_time:
+            delete_user(user.id)
+
+
+@app.template_filter('strftime')
+def _jinja2_filter_datetime(date):
+    format='%D - %H:%m'
+    return date.strftime(format)
+
+
 @app.route('/', methods=['GET'])
 def index():
+    cleanup()
     return render_template('index.html', users=User.query.all())
 
 

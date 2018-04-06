@@ -1,10 +1,58 @@
 {% extends "layout.html" %}
 
 {% block body %}
-  Taha!
 
-  {% for u in users %}
-    <p>{{ u.name }}, start time: {{ u.start_time }}, end time: {{ u.end_time }}</p>
-  {% endfor %}
+    <div class="col-sm-6 col-md-6">
+        <h3>List of schedules:</h3>
 
+        <ul class="list-group">
+            {% for u in users %}
+                <li class="list-group-item">
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <p>{{ u.name }}, start time: {{ u.start_time | strftime }}, end time: {{ u.end_time | strftime}}</p>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-danger delete-schedule" data-id="{{ u.id }}">delete</button>
+                        </div>
+                    <div/>
+                </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+    <div class="col-sm-6 col-md-6">
+        <h3>New schedule:</h3>
+
+        <form action="/user">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter name" name="name">
+            </div>
+
+            <div class="form-group">
+                <label for="start_time">Start time:</label>
+                <div class="input-group clockpicker">
+                    <input type="text" class="form-control" value="09:00" name="start_time">
+                    <span class="input-group-addon">
+                <span class="glyphicon glyphicon-time"></span>
+            </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="end_time">End time:</label>
+                <div class="input-group clockpicker">
+                    <input type="text" class="form-control" value="09:30" name="end_time">
+                    <span class="input-group-addon">
+                <span class="glyphicon glyphicon-time"></span>
+            </span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+
+    </div>
 {% endblock %}
