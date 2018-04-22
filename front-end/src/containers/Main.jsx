@@ -27,7 +27,6 @@ class Main extends Component {
                 </header>
                 <div className={'container'}>
                 <DisplayTimes
-                    key={Math.random()}
                     reservations={this.props.reservations}
                 />
                 </div>
