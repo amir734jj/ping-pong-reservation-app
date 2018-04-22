@@ -16,7 +16,7 @@ flask-sqlalchemy = "*"
 "psycopg2" = "*"
 "gunicorn"= "*"
 "python-dateutil" = "*"
-
+"flask-cors" = "*"
 
 [requires]
 
