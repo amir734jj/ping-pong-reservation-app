@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
+import {connect} from "react-redux";
+import {getReservationDateTimes} from '../actions/actions';
 
-export default class DisplayTimes extends Component{
+class DisplayTimes extends Component{
+
+    componentDidMount(){
+        if(!this.props.reservations)
+            this.props.getAllReservations();
+    }
     render(){
         return(
             <table className={'table table-striped'}>
@@ -24,7 +31,7 @@ export default class DisplayTimes extends Component{
                     this.props.reservations && this.props.reservations.length > 0 ?
                         this.props.reservations.map(x => {
                             return(
-                                <tr>
+                                <tr key={x.start_time}>
                                     <td>{x.name}</td>
                                     <td>{x.start_time}</td>
                                     <td>{x.end_time}</td>
@@ -38,3 +45,17 @@ export default class DisplayTimes extends Component{
         );
     }
 }
+
+const mapState = state => {
+    return {
+        reservations: state.data
+    };
+};
+
+const mapDispatch = dispatch => {
+    return {
+        getAllReservations: () => dispatch(getReservationDateTimes())
+    }
+};
+
+export default connect(mapState, mapDispatch)(DisplayTimes);
