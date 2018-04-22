@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../helpers/axios';
 import * as actionTypes from '../constants/actionTypes';
 
 export function requestReservationDateTimes() {
@@ -20,14 +20,10 @@ function xhrFail() {
     };
 }
 
-function throwXhrFail(message) {
-    throw new Error(message);
-}
-
 export function getReservationDateTimes() {
     return dispatch => {
         dispatch(requestReservationDateTimes());
-        return axios.get('http://localhost:5000/user')
+        return axios.get('user')
             .then(res => dispatch(receiveReservationDateTimes(res)))
             .catch(() =>  dispatch(xhrFail()));
     }
@@ -42,7 +38,7 @@ function addNewReservation(res){
 
 export function makeReservation(reservation) {
     return dispatch => {
-        return axios.post('http://localhost:5000/user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
+        return axios.post('user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
             .then(res => dispatch(addNewReservation(res)))
             .catch(x => dispatch(xhrFail()));
     }
@@ -65,7 +61,7 @@ function removeReservationSuccess(reservation) {
 export function removeReservation(reservation) {
     return dispatch => {
         dispatch(requestRemoveReservation(reservation));
-        return axios.delete(`http://localhost:5000/user/${reservation.id}`)
+        return axios.delete(`user/${reservation.id}`)
                     .then(res => dispatch(removeReservationSuccess(res.data)))
                     .catch(x => dispatch(xhrFail()));
     }
