@@ -21,7 +21,7 @@ function xhrFail() {
 }
 
 function throwXhrFail(message) {
-    throw Error(message);
+    throw new Error(message);
 }
 
 export function getReservationDateTimes() {
@@ -29,6 +29,9 @@ export function getReservationDateTimes() {
         dispatch(requestReservationDateTimes());
         axios.get('http://localhost:5000/user')
             .then(res => dispatch(receiveReservationDateTimes(res)))
-            
+            .catch(() => {
+                dispatch(xhrFail());
+               // throwXhrFail('Could not get data');
+            });
     }
 }

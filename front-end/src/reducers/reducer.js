@@ -14,7 +14,11 @@ const reducer = (prevState = initialState, action) => {
             });
         case actionTypes.RECV_GET_DATES:
             const classObjects = action.data.map(x => Object.assign(new Reservation(), x));
-            return Object.assign(prevState, { data: classObjects });
+            return {
+                ...prevState,
+                data: classObjects,
+                fetching: false
+            };
         // data = [
         //   {
         //      "end_time": "Sat, 21 Apr 2018 23:55:08 GMT",
