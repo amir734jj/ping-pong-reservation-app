@@ -42,7 +42,13 @@ const reducer = (prevState = initialState, action) => {
         case actionTypes.XHR_FAIL:
             return {
                 ...prevState,
-                fetching: false
+                fetching: false,
+                error: action.data
+            };
+        case actionTypes.CLEAR_ERROR:
+            return {
+                ...prevState,
+                error: undefined
             };
         default:
             return prevState;

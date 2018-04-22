@@ -14,9 +14,10 @@ export function receiveReservationDateTimes(res) {
     };
 }
 
-function xhrFail() {
+function xhrFail(message) {
     return {
-        type: actionTypes.XHR_FAIL
+        type: actionTypes.XHR_FAIL,
+        data: message
     };
 }
 
@@ -25,7 +26,7 @@ export function getReservationDateTimes() {
         dispatch(requestReservationDateTimes());
         return axios.get('user')
             .then(res => dispatch(receiveReservationDateTimes(res)))
-            .catch(() =>  dispatch(xhrFail()));
+            .catch(() =>  dispatch(xhrFail('Unable to contact the server')));
     }
 }
 
@@ -40,7 +41,7 @@ export function makeReservation(reservation) {
     return dispatch => {
         return axios.post('user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
             .then(res => dispatch(addNewReservation(res)))
-            .catch(x => dispatch(xhrFail()));
+            .catch(x => dispatch(xhrFail('Unable to make reservation')));
     }
 }
 
@@ -63,6 +64,12 @@ export function removeReservation(reservation) {
         dispatch(requestRemoveReservation(reservation));
         return axios.delete(`user/${reservation.id}`)
                     .then(res => dispatch(removeReservationSuccess(res.data)))
-                    .catch(x => dispatch(xhrFail()));
+                    .catch(x => dispatch(xhrFail('Unable to remove reservation.')));
+    }
+}
+
+export function clearError() {
+    return {
+        type: actionTypes.CLEAR_ERROR
     }
 }

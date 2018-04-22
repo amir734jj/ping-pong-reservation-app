@@ -1,11 +1,22 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {getReservationDateTimes, removeReservation} from '../actions/actions';
+import {getReservationDateTimes, removeReservation, clearError} from '../actions/actions';
+import swal from 'sweetalert2';
 
 class DisplayTimes extends Component{
 
     componentDidMount(){
         this.props.getAllReservations();
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.error) {
+            swal({
+                icon: 'error',
+                text: nextProps.error
+            });
+            this.props.clearError();
+        }
     }
 
     render(){
@@ -47,14 +58,16 @@ class DisplayTimes extends Component{
 
 const mapState = state => {
     return {
-        reservations: state.data
+        reservations: state.data,
+        error: state.error
     };
 };
 
 const mapDispatch = dispatch => {
     return {
         getAllReservations: () => dispatch(getReservationDateTimes()),
-        removeReservation: (reservation) => dispatch(removeReservation(reservation))
+        removeReservation: (reservation) => dispatch(removeReservation(reservation)),
+        clearError: () => dispatch(clearError())
     }
 };
 
