@@ -97,7 +97,8 @@ def get_all():
 @app.route('/user', methods=['POST'])
 @cross_origin()
 def create_user():
-    user = User(request.form['name'], request.form['start_time'], request.form['end_time'])
+    content = request.json
+    user = User(content['name'], content['start_time'], content['end_time'])
 
     if validate_start_end_time(user.start_time, user.end_time, user.id):
         db.session.add(user)

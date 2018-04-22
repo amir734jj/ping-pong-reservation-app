@@ -35,3 +35,17 @@ export function getReservationDateTimes() {
             });
     }
 }
+
+function addNewReservation(res){
+    return {
+        type: actionTypes.ADD_NEW_RESERVATION,
+        data: res.data
+    };
+}
+
+export function makeReservation(reservation) {
+    return dispatch => {
+        axios.post('http://localhost:5000/user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
+            .then(res => dispatch(addNewReservation(res)));
+    }
+}

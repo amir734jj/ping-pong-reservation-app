@@ -5,7 +5,7 @@ import {getReservationDateTimes} from '../actions/actions';
 class DisplayTimes extends Component{
 
     componentDidMount(){
-        if(!this.props.reservations)
+        if(this.props.reservations && this.props.reservations.length < 1)
             this.props.getAllReservations();
     }
     render(){
@@ -13,7 +13,6 @@ class DisplayTimes extends Component{
             <table className={'table table-striped'}>
                 <thead>
                 <tr>
-
                     <th>
                         Name
                     </th>
