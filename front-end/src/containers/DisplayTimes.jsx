@@ -10,7 +10,7 @@ class DisplayTimes extends Component{
 
     render(){
         return(
-            <table className={'table table-striped'}>
+            <table className={'table'}>
                 <thead>
                 <tr>
                     <th>
@@ -37,7 +37,7 @@ class DisplayTimes extends Component{
                                 </tr>
                             )
                         })
-                        :null
+                        : <tr><td colSpan={'3'}>No reservations</td></tr>
                 }
                 </tbody>
             </table>
