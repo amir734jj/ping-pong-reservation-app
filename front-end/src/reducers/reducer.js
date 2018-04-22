@@ -26,6 +26,19 @@ const reducer = (prevState = initialState, action) => {
                 ...prevState,
                 data
             };
+        case actionTypes.REQ_REMOVE_RESERVATION:
+            return {
+                ...prevState,
+                fetching: true
+            };
+        case actionTypes.REMOVE_RESERVATION_SUCCESS:
+            let reservation = action.data;
+            let newData = prevState.data.filter(x => x.id !== reservation.id);
+            return {
+                ...prevState,
+                data: newData,
+                fetching: false
+            };
         case actionTypes.XHR_FAIL:
             return {
                 ...prevState,

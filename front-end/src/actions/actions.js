@@ -27,12 +27,9 @@ function throwXhrFail(message) {
 export function getReservationDateTimes() {
     return dispatch => {
         dispatch(requestReservationDateTimes());
-        axios.get('http://localhost:5000/user')
+        return axios.get('http://localhost:5000/user')
             .then(res => dispatch(receiveReservationDateTimes(res)))
-            .catch(() => {
-                dispatch(xhrFail());
-               // throwXhrFail('Could not get data');
-            });
+            .catch(() =>  dispatch(xhrFail()));
     }
 }
 
@@ -45,7 +42,31 @@ function addNewReservation(res){
 
 export function makeReservation(reservation) {
     return dispatch => {
-        axios.post('http://localhost:5000/user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
-            .then(res => dispatch(addNewReservation(res)));
+        return axios.post('http://localhost:5000/user', JSON.stringify(reservation), {headers: {"Content-Type": "application/json"}})
+            .then(res => dispatch(addNewReservation(res)))
+            .catch(x => dispatch(xhrFail()));
+    }
+}
+
+function requestRemoveReservation(reservation) {
+    return {
+        type: actionTypes.REQ_REMOVE_RESERVATION,
+        data: reservation
+    };
+}
+
+function removeReservationSuccess(reservation) {
+    return {
+        type: actionTypes.REMOVE_RESERVATION_SUCCESS,
+        data: reservation
+    }
+}
+
+export function removeReservation(reservation) {
+    return dispatch => {
+        dispatch(requestRemoveReservation(reservation));
+        return axios.delete(`http://localhost:5000/user/${reservation.id}`)
+                    .then(res => dispatch(removeReservationSuccess(res.data)))
+                    .catch(x => dispatch(xhrFail()));
     }
 }

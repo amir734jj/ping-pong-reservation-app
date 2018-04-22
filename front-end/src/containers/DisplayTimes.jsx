@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {getReservationDateTimes} from '../actions/actions';
+import {getReservationDateTimes, removeReservation} from '../actions/actions';
 
 class DisplayTimes extends Component{
 
     componentDidMount(){
-        if(this.props.reservations && this.props.reservations.length < 1)
-            this.props.getAllReservations();
+        this.props.getAllReservations();
     }
+
     render(){
         return(
             <table className={'table table-striped'}>
@@ -22,7 +22,6 @@ class DisplayTimes extends Component{
                     <th>
                         End Time
                     </th>
-
                 </tr>
                 </thead>
                 <tbody>
@@ -34,6 +33,7 @@ class DisplayTimes extends Component{
                                     <td>{x.name}</td>
                                     <td>{x.start_time}</td>
                                     <td>{x.end_time}</td>
+                                    <td><button onClick={() => this.props.removeReservation(x)} type="button" class="btn btn-danger">Remove</button></td>
                                 </tr>
                             )
                         })
@@ -53,7 +53,8 @@ const mapState = state => {
 
 const mapDispatch = dispatch => {
     return {
-        getAllReservations: () => dispatch(getReservationDateTimes())
+        getAllReservations: () => dispatch(getReservationDateTimes()),
+        removeReservation: (reservation) => dispatch(removeReservation(reservation))
     }
 };
 
