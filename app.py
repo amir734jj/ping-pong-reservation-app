@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, jsonify, json, abort, make_response
+from flask import Flask, render_template, request, redirect, url_for, jsonify, json, abort, make_response, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 from dateutil import parser
@@ -85,8 +85,12 @@ def _jinja2_filter_datetime(date):
 @cross_origin()
 def index():
     cleanup()
-    return render_template('index.html', users=User.query.all())
+    return app.send_static_file('index.html')
 
+@app.route('/<path:path>')
+def static_proxy(path):
+  # send_static_file will guess the correct MIME type
+  return app.send_static_file(path)
 
 @app.route('/user', methods=['GET'])
 @cross_origin()
