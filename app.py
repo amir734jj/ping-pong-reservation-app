@@ -3,9 +3,12 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, j
 from flask_sqlalchemy import SQLAlchemy
 from random import randint
 from dateutil import parser
+from flask_cors import CORS, cross_origin
 import datetime
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///flask_app.db')
 print(DATABASE_URL)
@@ -72,23 +75,27 @@ def cleanup():
 
 
 @app.template_filter('strftime')
+@cross_origin()
 def _jinja2_filter_datetime(date):
     format='%D - %H:%m'
     return date.strftime(format)
 
 
 @app.route('/', methods=['GET'])
+@cross_origin()
 def index():
     cleanup()
     return render_template('index.html', users=User.query.all())
 
 
 @app.route('/user', methods=['GET'])
+@cross_origin()
 def get_all():
     return json.dumps([u.as_dict() for u in User.query.all()])
 
 
 @app.route('/user', methods=['POST'])
+@cross_origin()
 def create_user():
     user = User(request.form['name'], request.form['start_time'], request.form['end_time'])
 
@@ -101,6 +108,7 @@ def create_user():
 
 
 @app.route('/user/<user_id>', methods=['PUT'])
+@cross_origin()
 def update_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 
@@ -119,6 +127,7 @@ def update_user(user_id):
 
 
 @app.route('/user/<user_id>', methods=['DELETE'])
+@cross_origin()
 def delete_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 
